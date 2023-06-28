@@ -37,6 +37,16 @@ export default {
           <div class="card-body">
             <h4 class="card-title">{{ elem.name }}</h4>
             <p class="card-text">{{ elem.description }}</p>
+            <div>
+              <h5>Type</h5>
+              <span v-if="elem.type">{{ elem.type.name }}</span>
+            </div>
+            <div>
+              <h5>Technologies</h5>
+              <ul v-if="elem.technologies">
+                <li v-for="(elem, index) in elem.technologies" :key="index">{{ elem.name }}</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
