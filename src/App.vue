@@ -5,20 +5,28 @@ export default {
   data() {
     return {
       projects: [],
-      baseUrl: 'http://127.0.0.1:8000'
+      baseUrl: 'http://127.0.0.1:8000',
+      currentPage: 1,
+      lastPage: null
 
     }
   },
 
   mounted() {
-    this.getProjects();
+    this.getProjects(1);
   },
 
   methods: {
-    getProjects() {
-      axios.get(`${this.baseUrl}/api/projects`)
+    getProjects(projectApiPage) {
+      axios.get(`${this.baseUrl}/api/projects`, {
+        params: {
+          page: projectApiPage
+        }
+      })
         .then(res => {
-          this.projects = res.data.projects
+          this.projects = res.data.projects.data
+          this.currentPage = res.data.projects.current_page
+          this.lastPage = res.data.projects.last_page
         })
     }
   }
@@ -51,6 +59,28 @@ export default {
         </div>
       </div>
     </div>
+
+    <nav aria-label="Page navigation example" class="my-3">
+
+      <ul class="pagination">
+
+        <li class="page-item" style="cursor: pointer;"><a class="page-link" @click.prevent="getProjects(currentPage - 1)"
+            href="#">Previous</a></li>
+
+        <li class="page-item" style="cursor: pointer;" :class="(currentPage === elem) ? 'active' : ''"
+          v-for="(elem, index) in lastPage" :key="index">
+          <a class="page-link" @click.prevent="getProjects(elem)" href="#">
+            {{ elem }}
+          </a>
+        </li>
+
+        <li class="page-item" style="cursor: pointer;"><a class="page-link" @click.prevent="getProjects(currentPage + 1)"
+            href="#">Next</a>
+        </li>
+
+      </ul>
+
+    </nav>
 
   </div>
 </template>
