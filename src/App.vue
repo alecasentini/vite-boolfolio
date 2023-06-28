@@ -23,7 +23,12 @@ export default {
   },
 
   methods: {
-    getProjects(projectApiPage) {
+    getProjects(projectApiPage, prevPage, nextPage) {
+      if (prevPage && this.currentPage === 1) {
+        projectApiPage = this.lastPage;
+      } else if (nextPage && this.currentPage === this.lastPage) {
+        projectApiPage = 1;
+      }
       axios.get(`${this.baseUrl}/api/projects`, {
         params: {
           page: projectApiPage
@@ -54,8 +59,9 @@ export default {
 
       <ul class="pagination">
 
-        <li class="page-item" style="cursor: pointer;"><a class="page-link" @click.prevent="getProjects(currentPage - 1)"
-            href="#">Previous</a></li>
+        <li class="page-item" style="cursor: pointer;">
+          <a class="page-link" @click.prevent="getProjects(currentPage - 1, true)" href="#">Previous</a>
+        </li>
 
         <li class="page-item" style="cursor: pointer;" :class="(currentPage === elem) ? 'active' : ''"
           v-for="(elem, index) in lastPage" :key="index">
@@ -64,8 +70,8 @@ export default {
           </a>
         </li>
 
-        <li class="page-item" style="cursor: pointer;"><a class="page-link" @click.prevent="getProjects(currentPage + 1)"
-            href="#">Next</a>
+        <li class="page-item" style="cursor: pointer;">
+          <a class="page-link" @click.prevent="getProjects(currentPage + 1, false, true)" href="#">Next</a>
         </li>
 
       </ul>
