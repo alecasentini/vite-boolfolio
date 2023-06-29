@@ -17,7 +17,9 @@ export default {
     <div class="card">
         <img class="card-img-top" :src="`${baseUrl}/storage/${elem.cover_image}`" alt="">
         <div class="card-body">
-            <h4 class="card-title">{{ elem.name }}</h4>
+            <router-link :to="{ name: 'project', params: { slug: elem.slug } }">
+                <h4 class="card-title">{{ elem.name }}</h4>
+            </router-link>
             <p class="card-text">{{ elem.description }}</p>
             <div>
                 <h5>Type</h5>
