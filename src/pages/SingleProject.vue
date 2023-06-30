@@ -27,14 +27,23 @@ export default {
     methods: {
 
         getSingleProject() {
-            axios.get(`${this.baseUrl}/api/projects/${this.$route.params.slug}`).then((response) => {
-                if (response.data.success) {
+            axios.get(`${this.baseUrl}/api/projects/${this.$route.params.slug}`)
+                .then((response) => {
                     this.project = response.data.project;
-                } else {
-                    // redirect alla pagina 404
-                    this.$router.push({ name: 'not-found' })
+                }, error => {
+                    if (error.response.status === 404) {
+                        this.route.push({ name: 'not-fund' })
+                    } else {
+                        //qualsiasi altro errore
+                    }
                 }
-            });
+                    // if (response.data.success) {
+                    //     this.project = response.data.project;
+                    // } else {
+                    //     // redirect alla pagina 404
+                    //     this.$router.push({ name: 'not-found' })
+                    // }
+                );
         }
         // getProjects(projectApiPage, prevPage, nextPage) {
         //     if (prevPage && this.currentPage === 1) {
