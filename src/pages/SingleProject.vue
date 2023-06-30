@@ -26,6 +26,10 @@ export default {
 
     methods: {
 
+        goBack() {
+            this.$router.go(-1);
+        },
+
         getSingleProject() {
             axios.get(`${this.baseUrl}/api/projects/${this.$route.params.slug}`)
                 .then((response) => {
@@ -77,6 +81,8 @@ export default {
     <p>Technologies:
         <span v-for="(elem, index) in project.technologies" :key="index" class="me-2">{{ elem.name }} </span>
     </p>
+
+    <a href="" @click.prevent="goBack" class="btn btn-primary">Go back</a>
 </template>
 
 <style lang="scss"></style>
