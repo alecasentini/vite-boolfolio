@@ -1,9 +1,11 @@
 <script >
 
+import ContactsForm from '../components/ContactsForm.vue';
+
 export default {
     name: "Contact",
     components: {
-
+        ContactsForm
     },
 
     data() {
@@ -29,8 +31,10 @@ export default {
 
 <template>
     <h1>Contatti</h1>
-
-    <a href="" @click.prevent="goBack" class="btn btn-primary">Go back</a>
+    <div class="container">
+        <ContactsForm />
+    </div>
+    <a href="" @click.prevent="goBack" class="btn btn-primary mt-5">Go back</a>
 </template>
 
 <style lang="scss"></style>
