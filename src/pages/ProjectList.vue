@@ -15,7 +15,9 @@ export default {
             currentPage: 1,
             lastPage: null,
             types: null,
-            selectedType: "all"
+            selectedType: "all",
+            technologies: null,
+            selectedTechnologies: []
 
         }
     },
@@ -23,15 +25,27 @@ export default {
     mounted() {
         this.getProjects(1);
         this.getTypes();
+        this.getTechnologies();
+    },
+
+    watch: {
+        selectedTechnologies: {
+            handler: function () {
+                this.getProjects(1, false, false, true);
+            },
+            deep: true
+        }
     },
 
     methods: {
-        getProjects(projectApiPage, prevPage, nextPage) {
-
+        getProjects(projectApiPage, prevPage, nextPage, resetPage = false) {
+            if (resetPage) {
+                this.currentPage = 1;
+            }
 
             if (prevPage && this.currentPage === 1) {
                 projectApiPage = this.lastPage;
-            } else if (nextPage && this.currentPage === this.lastPage) {
+            } if (nextPage && this.currentPage === this.lastPage) {
                 projectApiPage = 1;
             }
 
@@ -42,6 +56,13 @@ export default {
             if (this.selectedType !== 'all') {
                 params.category_id = this.selectedType
             }
+
+            if (this.selectedTechnologies.length > 0) {
+                params.technologies_ids = this.selectedTechnologies.join(',');
+            }
+
+
+            console.log('params info', params);
 
             axios.get(`${this.baseUrl}/api/projects`, {
                 params
@@ -55,6 +76,12 @@ export default {
         getTypes() {
             axios.get(`${this.baseUrl}/api/types`).then(res => {
                 this.types = res.data.types
+            })
+        },
+
+        getTechnologies() {
+            axios.get(`${this.baseUrl}/api/technologies`).then(res => {
+                this.technologies = res.data.technologies
             })
         }
     }
@@ -70,11 +97,20 @@ export default {
         <div class="mb-3">
             <label for="" class="form-label">Types Filter</label>
 
-            <select @change="getProjects()" v-model="selectedType" class="form-select form-select-lg" name="" id="">
+            <select @change="getProjects()" v-model="selectedType" class="form-select form-select-lg">
                 <option value="all">-- All --</option>
                 <option :value="elem.id" v-for="(elem, index) in types" :key="index" selected>{{ elem.name }}</option>
 
             </select>
+        </div>
+
+        <div class="mb-3">
+            <h4>Filtra per Technologies</h4>
+            <label for="" v-for="(elem, index) in technologies" :key="index" class="me-4">
+                <input type="checkbox" :value="elem.id" v-model="selectedTechnologies">
+                {{ elem.name }}
+            </label>
+
         </div>
 
 
@@ -89,7 +125,7 @@ export default {
             <ul class="pagination">
 
                 <li class="page-item" style="cursor: pointer;">
-                    <a class="page-link" @click.prevent="getProjects(currentPage - 1, true)" href="#">Previous</a>
+                    <a class="page-link" @click.prevent="getProjects(currentPage - 1, true, false)" href="#">Previous</a>
                 </li>
 
                 <li class="page-item" style="cursor: pointer;" :class="(currentPage === elem) ? 'active' : ''"
